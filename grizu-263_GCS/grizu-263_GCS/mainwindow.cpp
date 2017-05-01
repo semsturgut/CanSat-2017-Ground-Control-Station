@@ -8,13 +8,14 @@ MainWindow::MainWindow(QWidget *parent) :
 {
     ui->setupUi(this);
     MainWindow::makePlot();
-    QPixmap compass("D:/Documents/grizu-263/GRIZU-263 (CANSAT)/Electronic Team/grizu-263_GCS/resources/compass.png");
+    //On Windows you should change directory. D:/Documents/grizu-263/GRIZU-263 (CANSAT)/Electronic Team/grizu-263_GCS/resources/
+    QPixmap compass("/home/sems/Documents/grizu-263/CanSat-2017-Ground-Control-Station/grizu-263_GCS/resources/compass.png");
     ui->pic_compass->setPixmap(compass);
-    QPixmap logo("D:/Documents/grizu-263/GRIZU-263 (CANSAT)/Electronic Team/grizu-263_GCS/resources/grizulogo.png");
+    QPixmap logo("/home/sems/Documents/grizu-263/CanSat-2017-Ground-Control-Station/grizu-263_GCS/resources/grizulogo.png");
     ui->pic_logo->setPixmap(logo);
-    QPixmap state("D:/Documents/grizu-263/GRIZU-263 (CANSAT)/Electronic Team/grizu-263_GCS/resources/true.png");
+    QPixmap state("/home/sems/Documents/grizu-263/CanSat-2017-Ground-Control-Station/grizu-263_GCS/resources/true.png");
     ui->pic_state->setPixmap(state);
-    QPixmap beun("D:/Documents/grizu-263/GRIZU-263 (CANSAT)/Electronic Team/grizu-263_GCS/resources/beun.png");
+    QPixmap beun("/home/sems/Documents/grizu-263/CanSat-2017-Ground-Control-Station/grizu-263_GCS/resources/beun.png");
     ui->pic_beun->setPixmap(beun);
     setWindowIcon(QIcon(logo));
 }
