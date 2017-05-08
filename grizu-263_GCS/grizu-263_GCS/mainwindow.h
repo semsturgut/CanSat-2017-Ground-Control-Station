@@ -15,8 +15,10 @@ public:
     explicit MainWindow(QWidget *parent = 0);
     ~MainWindow();
 
+
 private slots:
-    void makePlot();
+    void serialReceived();
+    void realtimeDataSlot();
 
 private:
     Ui::MainWindow *ui;
