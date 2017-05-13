@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>1061</width>
-    <height>782</height>
+    <width>1600</width>
+    <height>900</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -17,18 +17,18 @@
    <widget class="QCustomPlot" name="customPlot_2" native="true">
     <property name="geometry">
      <rect>
-      <x>280</x>
-      <y>290</y>
-      <width>241</width>
-      <height>191</height>
+      <x>450</x>
+      <y>260</y>
+      <width>320</width>
+      <height>230</height>
      </rect>
     </property>
    </widget>
    <widget class="QLCDNumber" name="lcdNumber">
     <property name="geometry">
      <rect>
-      <x>500</x>
-      <y>140</y>
+      <x>420</x>
+      <y>130</y>
       <width>64</width>
       <height>23</height>
      </rect>
@@ -50,18 +50,18 @@
    <widget class="QCustomPlot" name="customPlot" native="true">
     <property name="geometry">
      <rect>
-      <x>20</x>
-      <y>290</y>
-      <width>241</width>
-      <height>191</height>
+      <x>50</x>
+      <y>260</y>
+      <width>320</width>
+      <height>230</height>
      </rect>
     </property>
    </widget>
    <widget class="QLabel" name="label">
     <property name="geometry">
      <rect>
-      <x>390</x>
-      <y>140</y>
+      <x>310</x>
+      <y>130</y>
       <width>101</width>
       <height>16</height>
      </rect>
@@ -78,70 +78,68 @@
    <widget class="QCustomPlot" name="customPlot_3" native="true">
     <property name="geometry">
      <rect>
-      <x>800</x>
-      <y>290</y>
-      <width>241</width>
-      <height>191</height>
+      <x>1220</x>
+      <y>260</y>
+      <width>320</width>
+      <height>230</height>
      </rect>
     </property>
    </widget>
    <widget class="QCustomPlot" name="customPlot_4" native="true">
     <property name="geometry">
      <rect>
-      <x>540</x>
-      <y>290</y>
-      <width>241</width>
-      <height>191</height>
+      <x>840</x>
+      <y>260</y>
+      <width>320</width>
+      <height>230</height>
      </rect>
     </property>
    </widget>
    <widget class="QCustomPlot" name="customPlot_5" native="true">
     <property name="geometry">
      <rect>
-      <x>280</x>
-      <y>520</y>
-      <width>241</width>
-      <height>191</height>
+      <x>450</x>
+      <y>560</y>
+      <width>320</width>
+      <height>230</height>
      </rect>
     </property>
    </widget>
    <widget class="QCustomPlot" name="customPlot_6" native="true">
     <property name="geometry">
      <rect>
-      <x>800</x>
-      <y>520</y>
-      <width>241</width>
-      <height>191</height>
+      <x>1220</x>
+      <y>560</y>
+      <width>320</width>
+      <height>230</height>
      </rect>
     </property>
-    <zorder>label_12</zorder>
-    <zorder>customPlot_3</zorder>
    </widget>
    <widget class="QCustomPlot" name="customPlot_7" native="true">
     <property name="geometry">
      <rect>
-      <x>540</x>
-      <y>520</y>
-      <width>241</width>
-      <height>191</height>
+      <x>840</x>
+      <y>560</y>
+      <width>320</width>
+      <height>230</height>
      </rect>
     </property>
    </widget>
    <widget class="QCustomPlot" name="customPlot_8" native="true">
     <property name="geometry">
      <rect>
-      <x>20</x>
-      <y>520</y>
-      <width>241</width>
-      <height>191</height>
+      <x>50</x>
+      <y>560</y>
+      <width>320</width>
+      <height>230</height>
      </rect>
     </property>
    </widget>
    <widget class="QLabel" name="pic_compass">
     <property name="geometry">
      <rect>
-      <x>54</x>
-      <y>40</y>
+      <x>84</x>
+      <y>30</y>
       <width>161</width>
       <height>161</height>
      </rect>
@@ -153,8 +151,8 @@
    <widget class="QLabel" name="pic_logo">
     <property name="geometry">
      <rect>
-      <x>760</x>
-      <y>90</y>
+      <x>1330</x>
+      <y>40</y>
       <width>251</width>
       <height>181</height>
      </rect>
@@ -166,8 +164,8 @@
    <widget class="QLabel" name="label_2">
     <property name="geometry">
      <rect>
-      <x>129</x>
-      <y>10</y>
+      <x>159</x>
+      <y>0</y>
       <width>21</width>
       <height>31</height>
      </rect>
@@ -186,8 +184,8 @@
    <widget class="QLabel" name="label_3">
     <property name="geometry">
      <rect>
-      <x>130</x>
-      <y>200</y>
+      <x>160</x>
+      <y>190</y>
       <width>20</width>
       <height>31</height>
      </rect>
@@ -206,8 +204,8 @@
    <widget class="QLabel" name="label_4">
     <property name="geometry">
      <rect>
-      <x>34</x>
-      <y>100</y>
+      <x>64</x>
+      <y>90</y>
       <width>16</width>
       <height>41</height>
      </rect>
@@ -226,8 +224,8 @@
    <widget class="QLabel" name="label_5">
     <property name="geometry">
      <rect>
-      <x>224</x>
-      <y>100</y>
+      <x>254</x>
+      <y>90</y>
       <width>16</width>
       <height>41</height>
      </rect>
@@ -246,8 +244,8 @@
    <widget class="QLabel" name="label_6">
     <property name="geometry">
      <rect>
-      <x>390</x>
-      <y>50</y>
+      <x>310</x>
+      <y>40</y>
       <width>91</width>
       <height>21</height>
      </rect>
@@ -266,8 +264,8 @@
    <widget class="QLabel" name="label_7">
     <property name="geometry">
      <rect>
-      <x>390</x>
-      <y>70</y>
+      <x>310</x>
+      <y>60</y>
       <width>181</width>
       <height>41</height>
      </rect>
@@ -285,8 +283,8 @@ Space Team</string>
    <widget class="QLabel" name="label_8">
     <property name="geometry">
      <rect>
-      <x>390</x>
-      <y>110</y>
+      <x>310</x>
+      <y>100</y>
       <width>161</width>
       <height>21</height>
      </rect>
@@ -303,8 +301,8 @@ Space Team</string>
    <widget class="QLabel" name="label_9">
     <property name="geometry">
      <rect>
-      <x>70</x>
-      <y>490</y>
+      <x>120</x>
+      <y>500</y>
       <width>181</width>
       <height>21</height>
      </rect>
@@ -321,8 +319,8 @@ Space Team</string>
    <widget class="QLabel" name="label_10">
     <property name="geometry">
      <rect>
-      <x>310</x>
-      <y>490</y>
+      <x>490</x>
+      <y>500</y>
       <width>211</width>
       <height>21</height>
      </rect>
@@ -339,8 +337,8 @@ Space Team</string>
    <widget class="QLabel" name="label_11">
     <property name="geometry">
      <rect>
-      <x>590</x>
-      <y>490</y>
+      <x>910</x>
+      <y>500</y>
       <width>171</width>
       <height>21</height>
      </rect>
@@ -357,8 +355,8 @@ Space Team</string>
    <widget class="QLabel" name="label_12">
     <property name="geometry">
      <rect>
-      <x>860</x>
-      <y>490</y>
+      <x>1320</x>
+      <y>500</y>
       <width>151</width>
       <height>21</height>
      </rect>
@@ -375,9 +373,9 @@ Space Team</string>
    <widget class="QLabel" name="label_13">
     <property name="geometry">
      <rect>
-      <x>80</x>
-      <y>720</y>
-      <width>151</width>
+      <x>110</x>
+      <y>800</y>
+      <width>161</width>
       <height>21</height>
      </rect>
     </property>
@@ -393,8 +391,8 @@ Space Team</string>
    <widget class="QLabel" name="label_14">
     <property name="geometry">
      <rect>
-      <x>360</x>
-      <y>720</y>
+      <x>530</x>
+      <y>800</y>
       <width>141</width>
       <height>21</height>
      </rect>
@@ -411,8 +409,8 @@ Space Team</string>
    <widget class="QLabel" name="label_15">
     <property name="geometry">
      <rect>
-      <x>590</x>
-      <y>720</y>
+      <x>930</x>
+      <y>800</y>
       <width>181</width>
       <height>21</height>
      </rect>
@@ -429,8 +427,8 @@ Space Team</string>
    <widget class="QLabel" name="label_16">
     <property name="geometry">
      <rect>
-      <x>870</x>
-      <y>720</y>
+      <x>1330</x>
+      <y>800</y>
       <width>141</width>
       <height>21</height>
      </rect>
@@ -447,10 +445,10 @@ Space Team</string>
    <widget class="QLabel" name="label_17">
     <property name="geometry">
      <rect>
-      <x>84</x>
-      <y>250</y>
+      <x>110</x>
+      <y>231</y>
       <width>121</width>
-      <height>21</height>
+      <height>31</height>
      </rect>
     </property>
     <property name="font">
@@ -465,8 +463,8 @@ Space Team</string>
    <widget class="QLabel" name="label_18">
     <property name="geometry">
      <rect>
-      <x>390</x>
-      <y>170</y>
+      <x>310</x>
+      <y>160</y>
       <width>111</width>
       <height>21</height>
      </rect>
@@ -483,8 +481,8 @@ Space Team</string>
    <widget class="QLabel" name="label_19">
     <property name="geometry">
      <rect>
-      <x>500</x>
-      <y>170</y>
+      <x>420</x>
+      <y>160</y>
       <width>71</width>
       <height>21</height>
      </rect>
@@ -503,8 +501,8 @@ Space Team</string>
    <widget class="QLabel" name="label_20">
     <property name="geometry">
      <rect>
-      <x>390</x>
-      <y>200</y>
+      <x>310</x>
+      <y>190</y>
       <width>111</width>
       <height>21</height>
      </rect>
@@ -521,8 +519,8 @@ Space Team</string>
    <widget class="QLabel" name="pic_state">
     <property name="geometry">
      <rect>
-      <x>500</x>
-      <y>190</y>
+      <x>420</x>
+      <y>180</y>
       <width>51</width>
       <height>41</height>
      </rect>
@@ -534,10 +532,10 @@ Space Team</string>
    <widget class="QLabel" name="label_26">
     <property name="geometry">
      <rect>
-      <x>130</x>
-      <y>230</y>
-      <width>20</width>
-      <height>21</height>
+      <x>120</x>
+      <y>210</y>
+      <width>91</width>
+      <height>31</height>
      </rect>
     </property>
     <property name="font">
@@ -548,14 +546,56 @@ Space Team</string>
     <property name="text">
      <string>0°</string>
     </property>
+    <property name="alignment">
+     <set>Qt::AlignCenter</set>
+    </property>
    </widget>
    <widget class="QLabel" name="pic_beun">
     <property name="geometry">
      <rect>
-      <x>740</x>
-      <y>0</y>
-      <width>301</width>
-      <height>81</height>
+      <x>1030</x>
+      <y>40</y>
+      <width>300</width>
+      <height>175</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string/>
+    </property>
+   </widget>
+   <widget class="QLabel" name="pic_aas">
+    <property name="geometry">
+     <rect>
+      <x>770</x>
+      <y>20</y>
+      <width>252</width>
+      <height>124</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string/>
+    </property>
+   </widget>
+   <widget class="QLabel" name="pic_aiaa">
+    <property name="geometry">
+     <rect>
+      <x>780</x>
+      <y>160</y>
+      <width>232</width>
+      <height>89</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string/>
+    </property>
+   </widget>
+   <widget class="QLabel" name="pic_nasa">
+    <property name="geometry">
+     <rect>
+      <x>500</x>
+      <y>30</y>
+      <width>250</width>
+      <height>210</height>
      </rect>
     </property>
     <property name="text">

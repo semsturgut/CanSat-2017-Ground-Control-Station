@@ -10,8 +10,6 @@ QString raw;
 QStringList raw_list;
 QStringList sensorData;
 double con_alt,con_temp,con_volt;
-//bool ok;
-
 
 
 MainWindow::MainWindow(QWidget *parent) :
@@ -29,6 +27,12 @@ MainWindow::MainWindow(QWidget *parent) :
         ui->pic_state->setPixmap(state);
         QPixmap beun("/home/sems/Documents/grizu-263/CanSat-2017-Ground-Control-Station/grizu-263_GCS/resources/beun.png");
         ui->pic_beun->setPixmap(beun);
+        QPixmap aas("/home/sems/Documents/grizu-263/CanSat-2017-Ground-Control-Station/grizu-263_GCS/resources/aas.png");
+        ui->pic_aas->setPixmap(aas);
+        QPixmap aiaa("/home/sems/Documents/grizu-263/CanSat-2017-Ground-Control-Station/grizu-263_GCS/resources/aiaa.png");
+        ui->pic_aiaa->setPixmap(aiaa);
+        QPixmap nasa("/home/sems/Documents/grizu-263/CanSat-2017-Ground-Control-Station/grizu-263_GCS/resources/nasa.png");
+        ui->pic_nasa->setPixmap(nasa);
         setWindowIcon(QIcon(logo));
 
         ui->lcdNumber->setDigitCount(4);
@@ -110,9 +114,10 @@ void MainWindow::serialReceived(){
                 std::string message(tel_data.constData(), tel_data.length());
                 raw = QString::fromStdString(message);
                 raw_list = QString(raw).split("4773",QString::SkipEmptyParts);
-                raw_list = QString(raw_list.at(1)).split("\r",QString::SkipEmptyParts);
-                raw_list = QString(raw_list.at(0)).split(",",QString::SkipEmptyParts);
+                raw_list = QString(raw_list.at(0)).split("\r",QString::SkipEmptyParts);
                 qDebug()<<raw_list;
+                raw_list = QString(raw_list.at(0)).split(",",QString::SkipEmptyParts);
+
                 ui->lcdNumber->display(raw_list.at(2));
                 // setup a timer that repeatedly calls MainWindow::realtimeDataSlot:
                 QTimer *dataTimer = new QTimer(this);
