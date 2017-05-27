@@ -1,3 +1,7 @@
+// Veri alisverisinden belirli bir sure sonra olusan arayuz takilmasi problemi giderilecek..
+// Glider 2d harita yazilmasi gerekiyor..
+// Grafiklerin altina anlik alinan degerler muhendislik unitleri ile eklenecek. (m/s etc.)
+
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
 #include "qcustomplot.h"
@@ -10,6 +14,7 @@ QString raw;
 QStringList raw_list;
 QStringList sensorData;
 double con_alt,con_temp,con_volt;
+int cnnct_problem = 0;
 
 
 MainWindow::MainWindow(QWidget *parent) :
@@ -115,9 +120,9 @@ void MainWindow::serialReceived(){
                 raw = QString::fromStdString(message);
                 raw_list = QString(raw).split("4773",QString::SkipEmptyParts);
                 raw_list = QString(raw_list.at(0)).split("\r",QString::SkipEmptyParts);
-                qDebug()<<raw_list;
                 raw_list = QString(raw_list.at(0)).split(",",QString::SkipEmptyParts);
-
+                qDebug() << raw_list;
+                if(raw_list.size() >= 7){
                 ui->lcdNumber->display(raw_list.at(2));
                 // setup a timer that repeatedly calls MainWindow::realtimeDataSlot:
                 QTimer *dataTimer = new QTimer(this);
@@ -127,6 +132,11 @@ void MainWindow::serialReceived(){
                 con_volt = raw_list.at(5).toDouble(&ok);
                 connect(dataTimer, SIGNAL(timeout()), this, SLOT(realtimeDataSlot()));
                 dataTimer->start(0); // Interval 0 means to refresh as fast as possible
+                } else if (raw_list.size() > 0){
+                    cnnct_problem++;
+                    qDebug() << "Data loss problem appearead..";
+                    qDebug() << "Total data loss problems: " << cnnct_problem;
+                }
                 tel_data.clear();
                 raw.clear();
                 raw_list.clear();
@@ -139,7 +149,7 @@ void MainWindow::realtimeDataSlot(){
         // calculate two new data points:
         double key = time.elapsed()/1000.0; // time elapsed since start of demo, in seconds
         static double lastPointKey = 0;
-        if (key-lastPointKey > 0.002) // at most add point every 2 ms
+        if (key-lastPointKey > 1) // at most add point every 2 ms
         {
                 // add data to lines:
                 ui->customPlot->graph(0)->addData(key, con_alt);
@@ -180,7 +190,7 @@ void MainWindow::realtimeDataSlot(){
         ui->customPlot_8->replot();
 
 // calculate frames per second:
-        static double lastFpsKey;
+        /*static double lastFpsKey;
         static int frameCount;
         ++frameCount;
         if (key-lastFpsKey > 2) // average fps over 2 seconds
@@ -192,7 +202,7 @@ void MainWindow::realtimeDataSlot(){
                         , 0);
                 lastFpsKey = key;
                 frameCount = 0;
-        }
+        }*/
         /*
            // generate some data:
            QVector<double> x(101), y(101); // initialize with entries 0..100
