@@ -141,7 +141,12 @@ void MainWindow::serialReceived(){
                                 con_temp = raw_list.at(4).toDouble(&ok);
                                 con_volt = raw_list.at(5).toDouble(&ok);
                                 softState = raw_list.at(6);
-                                ui->conAltLbl->setText(con_al);
+
+                                ui->conAltLbl->clear();
+                                ui->conAltLbl->setText(QString::number(13));
+                                ui->conTempLbl->setText(QString::number(con_temp));
+                                ui->conVoltLbl->setText(QString::number(con_volt));
+
                                 connect(dataTimer, SIGNAL(timeout()), this, SLOT(realtimeDataSlot()));
                                 dataTimer->start(0); // Interval 0 means to refresh as fast as possible
                         } else if (raw_list.size() > 0) {
@@ -165,6 +170,13 @@ void MainWindow::serialReceived(){
                                 gld_heading = raw_list.at(8).toInt();
                                 softState = raw_list.at(9);
                                 gld_img_count = raw_list.at(10).toInt();
+
+                                ui->glidAltLbl->setText(QString::number(gld_alt));
+                                ui->glidPresLbl->setText(QString::number(gld_press));
+                                ui->glidSpdLbl->setText(QString::number(gld_speed));
+                                ui->glidTempLbl->setText(QString::number(gld_temp));
+                                ui->glidVoltLbl->setText(QString::number(gld_volt));
+
                                 connect(dataTimer, SIGNAL(timeout()), this, SLOT(realtimeDataSlot()));
                                 dataTimer->start(0); // Interval 0 means to refresh as fast as possible
                         } else if (raw_list.size() > 0) {
@@ -185,8 +197,8 @@ void MainWindow::realtimeDataSlot(){
         // calculate two new data points:
         double key = time.elapsed()/1000.0; // time elapsed since start of demo, in seconds
         static double lastPointKey = 0;
-        if (key-lastPointKey > 1) // at most add point every 1 second
-        {
+        if (key-lastPointKey > 1) { // at most add point every 1 second
+
                 // add data to lines:
                 ui->conAltPlot->graph(0)->addData(key, con_alt);
                 ui->conTempPlot->graph(0)->addData(key, con_temp);
