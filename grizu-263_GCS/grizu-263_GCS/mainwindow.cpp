@@ -1,6 +1,10 @@
+// @@@ Grafik x ekseni default degerleri yarismadan once degistirilecek.
 // Veri alisverisinden belirli bir sure sonra olusan arayuz takilmasi problemi giderilecek..
 // Glider 2d harita yazilmasi gerekiyor..
 // Grafiklerin altina anlik alinan degerler muhendislik unitleri ile eklenecek. (m/s etc.)
+// Log kaydi tutulacak.
+// Soft state kismi yapilacak
+// Mission time kismi eklenecek.
 
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
@@ -13,8 +17,12 @@ QSerialPort *serial;
 QString raw;
 QStringList raw_list;
 QStringList sensorData;
+QString softState,con_missionTime,gld_missionTime;
 double con_alt,con_temp,con_volt;
-int cnnct_problem = 0;
+double gld_alt,gld_press,gld_temp,gld_volt;
+int con_count;
+int gld_count,gld_speed,gld_heading,gld_img_count;
+int con_loss = 0,gld_loss=0;
 
 
 MainWindow::MainWindow(QWidget *parent) :
@@ -22,7 +30,6 @@ MainWindow::MainWindow(QWidget *parent) :
         ui(new Ui::MainWindow)
 {
         ui->setupUi(this);
-        //MainWindow::makePlot();
         //On Windows you should change directory. D:/Documents/grizu-263/GRIZU-263 (CANSAT)/Electronic Team/grizu-263_GCS/resources/
         QPixmap compass("/home/sems/Documents/grizu-263/CanSat-2017-Ground-Control-Station/grizu-263_GCS/resources/compass.png");
         ui->pic_compass->setPixmap(compass);
@@ -42,58 +49,57 @@ MainWindow::MainWindow(QWidget *parent) :
 
         ui->lcdNumber->setDigitCount(4);
 
-        ui->customPlot->addGraph();
-        ui->customPlot->graph(0)->setPen(QPen(QColor(244, 66, 66)));
-        ui->customPlot_2->addGraph();
-        ui->customPlot_2->graph(0)->setPen(QPen(QColor(73, 65, 244)));
-        ui->customPlot_3->addGraph();
-        ui->customPlot_3->graph(0)->setPen(QPen(QColor(244, 241, 65)));
-        ui->customPlot_4->addGraph();
-        ui->customPlot_4->graph(0)->setPen(QPen(QColor(157, 65, 244)));
-        ui->customPlot_5->addGraph();
-        ui->customPlot_5->graph(0)->setPen(QPen(QColor(244, 241, 65)));
-        ui->customPlot_6->addGraph();
-        ui->customPlot_6->graph(0)->setPen(QPen(QColor(244, 241, 65)));
-        ui->customPlot_7->addGraph();
-        ui->customPlot_7->graph(0)->setPen(QPen(QColor(244, 241, 65)));
-        ui->customPlot_8->addGraph();
-        ui->customPlot_8->graph(0)->setPen(QPen(QColor(244, 241, 65)));
+        ui->conAltPlot->addGraph(); // Container Altitude
+        ui->conAltPlot->graph(0)->setPen(QPen(QColor(244, 66, 66)));
+        ui->conTempPlot->addGraph(); // Container Temperature
+        ui->conTempPlot->graph(0)->setPen(QPen(QColor(73, 65, 244)));
+        ui->glidAltPlot->addGraph(); // Glider Altitude
+        ui->glidAltPlot->graph(0)->setPen(QPen(QColor(244, 241, 65)));
+        ui->conVoltPlot->addGraph(); // Container Voltage
+        ui->conVoltPlot->graph(0)->setPen(QPen(QColor(157, 65, 244)));
+        ui->glidSpdPlot->addGraph(); // Glider Speed
+        ui->glidSpdPlot->graph(0)->setPen(QPen(QColor(244, 241, 65)));
+        ui->glidVoltPlot->addGraph(); // Glider Voltage
+        ui->glidVoltPlot->graph(0)->setPen(QPen(QColor(244, 241, 65)));
+        ui->glidTempPlot->addGraph(); // Glider Temperature
+        ui->glidTempPlot->graph(0)->setPen(QPen(QColor(244, 241, 65)));
+        ui->glidPresPlot->addGraph(); // Glider Pressure
+        ui->glidPresPlot->graph(0)->setPen(QPen(QColor(244, 241, 65)));
 
         QSharedPointer<QCPAxisTickerTime> timeTicker(new QCPAxisTickerTime);
         timeTicker->setTimeFormat("%m:%s");
 
-        ui->customPlot->xAxis->setTicker(timeTicker);
-        ui->customPlot->axisRect()->setupFullAxesBox();
-        ui->customPlot->yAxis->setRange(-5, 100);
+        ui->conAltPlot->xAxis->setTicker(timeTicker);
+        ui->conAltPlot->axisRect()->setupFullAxesBox();
+        ui->conAltPlot->yAxis->setRange(-5, 200);
 
-        ui->customPlot_2->xAxis->setTicker(timeTicker);
-        ui->customPlot_2->axisRect()->setupFullAxesBox();
-        ui->customPlot_2->yAxis->setRange(-5, 50);
+        ui->conTempPlot->xAxis->setTicker(timeTicker);
+        ui->conTempPlot->axisRect()->setupFullAxesBox();
+        ui->conTempPlot->yAxis->setRange(-5, 50);
 
-        ui->customPlot_3->xAxis->setTicker(timeTicker);
-        ui->customPlot_3->axisRect()->setupFullAxesBox();
-        ui->customPlot_3->yAxis->setRange(-5, 100);
+        ui->glidAltPlot->xAxis->setTicker(timeTicker);
+        ui->glidAltPlot->axisRect()->setupFullAxesBox();
+        ui->glidAltPlot->yAxis->setRange(-5, 200);
 
-        ui->customPlot_4->xAxis->setTicker(timeTicker);
-        ui->customPlot_4->axisRect()->setupFullAxesBox();
-        ui->customPlot_4->yAxis->setRange(-5, 10);
+        ui->conVoltPlot->xAxis->setTicker(timeTicker);
+        ui->conVoltPlot->axisRect()->setupFullAxesBox();
+        ui->conVoltPlot->yAxis->setRange(0, 10);
 
-        ui->customPlot_5->xAxis->setTicker(timeTicker);
-        ui->customPlot_5->axisRect()->setupFullAxesBox();
-        ui->customPlot_5->yAxis->setRange(-5, 5);
+        ui->glidSpdPlot->xAxis->setTicker(timeTicker);
+        ui->glidSpdPlot->axisRect()->setupFullAxesBox();
+        ui->glidSpdPlot->yAxis->setRange(-5, 30);
 
-        ui->customPlot_6->xAxis->setTicker(timeTicker);
-        ui->customPlot_6->axisRect()->setupFullAxesBox();
-        ui->customPlot_6->yAxis->setRange(-5, 10);
+        ui->glidVoltPlot->xAxis->setTicker(timeTicker);
+        ui->glidVoltPlot->axisRect()->setupFullAxesBox();
+        ui->glidVoltPlot->yAxis->setRange(0, 10);
 
-        ui->customPlot_7->xAxis->setTicker(timeTicker);
-        ui->customPlot_7->axisRect()->setupFullAxesBox();
-        ui->customPlot_7->yAxis->setRange(-5, 50);
+        ui->glidTempPlot->xAxis->setTicker(timeTicker);
+        ui->glidTempPlot->axisRect()->setupFullAxesBox();
+        ui->glidTempPlot->yAxis->setRange(-5, 50);
 
-        ui->customPlot_8->xAxis->setTicker(timeTicker);
-        ui->customPlot_8->axisRect()->setupFullAxesBox();
-        ui->customPlot_8->yAxis->setRange(-5, 150000);
-
+        ui->glidPresPlot->xAxis->setTicker(timeTicker);
+        ui->glidPresPlot->axisRect()->setupFullAxesBox();
+        ui->glidPresPlot->yAxis->setRange(0, 5000);
 
         //Serial communication
         serial = new QSerialPort(this);
@@ -118,24 +124,54 @@ void MainWindow::serialReceived(){
                 QByteArray tel_data = serial->readLine();
                 std::string message(tel_data.constData(), tel_data.length());
                 raw = QString::fromStdString(message);
+                // qDebug() << raw;
                 raw_list = QString(raw).split("4773",QString::SkipEmptyParts);
                 raw_list = QString(raw_list.at(0)).split("\r",QString::SkipEmptyParts);
                 raw_list = QString(raw_list.at(0)).split(",",QString::SkipEmptyParts);
                 qDebug() << raw_list;
-                if(raw_list.size() >= 7){
-                ui->lcdNumber->display(raw_list.at(2));
-                // setup a timer that repeatedly calls MainWindow::realtimeDataSlot:
-                QTimer *dataTimer = new QTimer(this);
-                bool ok;
-                con_alt = raw_list.at(3).toDouble(&ok);
-                con_temp = raw_list.at(4).toDouble(&ok);
-                con_volt = raw_list.at(5).toDouble(&ok);
-                connect(dataTimer, SIGNAL(timeout()), this, SLOT(realtimeDataSlot()));
-                dataTimer->start(0); // Interval 0 means to refresh as fast as possible
-                } else if (raw_list.size() > 0){
-                    cnnct_problem++;
-                    qDebug() << "Data loss problem appearead..";
-                    qDebug() << "Total data loss problems: " << cnnct_problem;
+                if (raw_list.at(0) == "CONTAINER") {
+                        if(raw_list.size() >= 7) {
+                                ui->lcdNumber->display(raw_list.at(2));
+                                // setup a timer that repeatedly calls MainWindow::realtimeDataSlot:
+                                QTimer *dataTimer = new QTimer(this);
+                                bool ok;
+                                con_missionTime = raw_list.at(1);
+                                con_count = raw_list.at(2).toInt();
+                                con_alt = raw_list.at(3).toDouble(&ok);
+                                con_temp = raw_list.at(4).toDouble(&ok);
+                                con_volt = raw_list.at(5).toDouble(&ok);
+                                softState = raw_list.at(6);
+                                ui->conAltLbl->setText(con_al);
+                                connect(dataTimer, SIGNAL(timeout()), this, SLOT(realtimeDataSlot()));
+                                dataTimer->start(0); // Interval 0 means to refresh as fast as possible
+                        } else if (raw_list.size() > 0) {
+                                con_loss++;
+                                qDebug() << "Data loss problem appeared..";
+                                qDebug() << "Total data loss on CONTAINER: " << con_loss;
+                        }
+                } else if (raw_list.at(0) == "GLIDER") {
+                        if(raw_list.size() >= 11) {
+                                ui->lcdNumber->display(raw_list.at(2));
+                                // setup a timer that repeatedly calls MainWindow::realtimeDataSlot:
+                                QTimer *dataTimer = new QTimer(this);
+                                bool ok;
+                                gld_missionTime = raw_list.at(1).toInt();
+                                gld_count = raw_list.at(2).toInt();
+                                gld_alt = raw_list.at(3).toDouble(&ok);
+                                gld_press = raw_list.at(4).toDouble(&ok);
+                                gld_speed = raw_list.at(5).toInt();
+                                gld_temp = raw_list.at(6).toInt();
+                                gld_volt = raw_list.at(7).toDouble(&ok);
+                                gld_heading = raw_list.at(8).toInt();
+                                softState = raw_list.at(9);
+                                gld_img_count = raw_list.at(10).toInt();
+                                connect(dataTimer, SIGNAL(timeout()), this, SLOT(realtimeDataSlot()));
+                                dataTimer->start(0); // Interval 0 means to refresh as fast as possible
+                        } else if (raw_list.size() > 0) {
+                                con_loss++;
+                                qDebug() << "Data loss problem appeared..";
+                                qDebug() << "Total data loss on GLIDER: " << con_loss;
+                        }
                 }
                 tel_data.clear();
                 raw.clear();
@@ -149,76 +185,43 @@ void MainWindow::realtimeDataSlot(){
         // calculate two new data points:
         double key = time.elapsed()/1000.0; // time elapsed since start of demo, in seconds
         static double lastPointKey = 0;
-        if (key-lastPointKey > 1) // at most add point every 2 ms
+        if (key-lastPointKey > 1) // at most add point every 1 second
         {
                 // add data to lines:
-                ui->customPlot->graph(0)->addData(key, con_alt);
-                ui->customPlot_2->graph(0)->addData(key, con_temp);
-                ui->customPlot_3->graph(0)->addData(key, 0);
-                ui->customPlot_4->graph(0)->addData(key, con_volt);
-                ui->customPlot_5->graph(0)->addData(key, 0);
-                ui->customPlot_6->graph(0)->addData(key, 0);
-                ui->customPlot_7->graph(0)->addData(key, 0);
-                ui->customPlot_8->graph(0)->addData(key, 0);
+                ui->conAltPlot->graph(0)->addData(key, con_alt);
+                ui->conTempPlot->graph(0)->addData(key, con_temp);
+                ui->glidAltPlot->graph(0)->addData(key, gld_alt);
+                ui->conVoltPlot->graph(0)->addData(key, con_volt);
+                ui->glidSpdPlot->graph(0)->addData(key, gld_speed);
+                ui->glidVoltPlot->graph(0)->addData(key, gld_volt);
+                ui->glidTempPlot->graph(0)->addData(key, gld_temp);
+                ui->glidPresPlot->graph(0)->addData(key, gld_press);
                 // rescale value (vertical) axis to fit the current data:
-                ui->customPlot->graph(0)->rescaleValueAxis(true);
-                ui->customPlot_2->graph(0)->rescaleValueAxis(true);
-                ui->customPlot_3->graph(0)->rescaleValueAxis(true);
-                ui->customPlot_4->graph(0)->rescaleValueAxis(true);
-                ui->customPlot_5->graph(0)->rescaleValueAxis(true);
-                ui->customPlot_6->graph(0)->rescaleValueAxis(true);
-                ui->customPlot_7->graph(0)->rescaleValueAxis(true);
-                ui->customPlot_8->graph(0)->rescaleValueAxis(true);
+                ui->conAltPlot->graph(0)->rescaleValueAxis(true);
+                ui->conTempPlot->graph(0)->rescaleValueAxis(true);
+                ui->glidAltPlot->graph(0)->rescaleValueAxis(true);
+                ui->conVoltPlot->graph(0)->rescaleValueAxis(true);
+                ui->glidSpdPlot->graph(0)->rescaleValueAxis(true);
+                ui->glidVoltPlot->graph(0)->rescaleValueAxis(true);
+                ui->glidTempPlot->graph(0)->rescaleValueAxis(true);
+                ui->glidPresPlot->graph(0)->rescaleValueAxis(true);
                 lastPointKey = key;
         }
 // make key axis range scroll with the data (at a constant range size of 8):
-        ui->customPlot->xAxis->setRange(key, 8, Qt::AlignRight);
-        ui->customPlot->replot();
-        ui->customPlot_2->xAxis->setRange(key, 8, Qt::AlignRight);
-        ui->customPlot_2->replot();
-        ui->customPlot_3->xAxis->setRange(key, 8, Qt::AlignRight);
-        ui->customPlot_3->replot();
-        ui->customPlot_4->xAxis->setRange(key, 8, Qt::AlignRight);
-        ui->customPlot_4->replot();
-        ui->customPlot_5->xAxis->setRange(key, 8, Qt::AlignRight);
-        ui->customPlot_5->replot();
-        ui->customPlot_6->xAxis->setRange(key, 8, Qt::AlignRight);
-        ui->customPlot_6->replot();
-        ui->customPlot_7->xAxis->setRange(key, 8, Qt::AlignRight);
-        ui->customPlot_7->replot();
-        ui->customPlot_8->xAxis->setRange(key, 8, Qt::AlignRight);
-        ui->customPlot_8->replot();
-
-// calculate frames per second:
-        /*static double lastFpsKey;
-        static int frameCount;
-        ++frameCount;
-        if (key-lastFpsKey > 2) // average fps over 2 seconds
-        {
-                ui->statusBar->showMessage(
-                        QString("%1 FPS, Total Data points: %2")
-                        .arg(frameCount/(key-lastFpsKey), 0, 'f', 0)
-                        .arg(ui->customPlot->graph(0)->data()->size())
-                        , 0);
-                lastFpsKey = key;
-                frameCount = 0;
-        }*/
-        /*
-           // generate some data:
-           QVector<double> x(101), y(101); // initialize with entries 0..100
-           for (int i=0; i<101; ++i)
-           {
-           x[i] = i/50.0 - 1; // x goes from -1 to 1
-           y[i] = x[i]*x[i]; // let's plot a quadratic function
-           }
-           // create graph and assign data to it:
-           ui->customPlot->addGraph();
-           ui->customPlot->graph(0)->setData(x, y);
-           // give the axes some labels:
-           ui->customPlot->xAxis->setLabel("x");
-           ui->customPlot->yAxis->setLabel("y");
-           // set axes ranges, so we see all data:
-           ui->customPlot->xAxis->setRange(-1, 1);
-           ui->customPlot->yAxis->setRange(0, 1);
-           ui->customPlot->replot();*/
+        ui->conAltPlot->xAxis->setRange(key, 8, Qt::AlignRight);
+        ui->conAltPlot->replot();
+        ui->conTempPlot->xAxis->setRange(key, 8, Qt::AlignRight);
+        ui->conTempPlot->replot();
+        ui->glidAltPlot->xAxis->setRange(key, 8, Qt::AlignRight);
+        ui->glidAltPlot->replot();
+        ui->conVoltPlot->xAxis->setRange(key, 8, Qt::AlignRight);
+        ui->conVoltPlot->replot();
+        ui->glidSpdPlot->xAxis->setRange(key, 8, Qt::AlignRight);
+        ui->glidSpdPlot->replot();
+        ui->glidVoltPlot->xAxis->setRange(key, 8, Qt::AlignRight);
+        ui->glidVoltPlot->replot();
+        ui->glidTempPlot->xAxis->setRange(key, 8, Qt::AlignRight);
+        ui->glidTempPlot->replot();
+        ui->glidPresPlot->xAxis->setRange(key, 8, Qt::AlignRight);
+        ui->glidPresPlot->replot();
 }
