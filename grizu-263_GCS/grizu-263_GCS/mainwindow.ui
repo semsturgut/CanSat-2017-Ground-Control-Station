@@ -478,7 +478,7 @@ Space Team</string>
      <string>Mission Time:</string>
     </property>
    </widget>
-   <widget class="QLabel" name="label_19">
+   <widget class="QLabel" name="mssnTimeLbl">
     <property name="geometry">
      <rect>
       <x>420</x>
@@ -503,7 +503,7 @@ Space Team</string>
      <rect>
       <x>310</x>
       <y>190</y>
-      <width>111</width>
+      <width>51</width>
       <height>21</height>
      </rect>
     </property>
@@ -513,20 +513,7 @@ Space Team</string>
      </font>
     </property>
     <property name="text">
-     <string>Software State:</string>
-    </property>
-   </widget>
-   <widget class="QLabel" name="pic_state">
-    <property name="geometry">
-     <rect>
-      <x>420</x>
-      <y>180</y>
-      <width>51</width>
-      <height>41</height>
-     </rect>
-    </property>
-    <property name="text">
-     <string/>
+     <string>State:</string>
     </property>
    </widget>
    <widget class="QLabel" name="label_26">
@@ -936,6 +923,24 @@ Space Team</string>
     </property>
     <property name="alignment">
      <set>Qt::AlignCenter</set>
+    </property>
+   </widget>
+   <widget class="QLabel" name="stateLbl">
+    <property name="geometry">
+     <rect>
+      <x>360</x>
+      <y>190</y>
+      <width>131</width>
+      <height>21</height>
+     </rect>
+    </property>
+    <property name="font">
+     <font>
+      <pointsize>12</pointsize>
+     </font>
+    </property>
+    <property name="text">
+     <string>NO-CONNECTION</string>
     </property>
    </widget>
   </widget>

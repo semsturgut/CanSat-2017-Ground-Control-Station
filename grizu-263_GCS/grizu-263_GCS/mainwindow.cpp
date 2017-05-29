@@ -1,10 +1,9 @@
-// @@@ Grafik x ekseni default degerleri yarismadan once degistirilecek.
+// @@@ Grafik x ekseni default degerleri yarismadan once kontrol edilecek.
 // Veri alisverisinden belirli bir sure sonra olusan arayuz takilmasi problemi giderilecek..
 // Glider 2d harita yazilmasi gerekiyor..
-// Grafiklerin altina anlik alinan degerler muhendislik unitleri ile eklenecek. (m/s etc.)
 // Log kaydi tutulacak.
-// Soft state kismi yapilacak
 // Mission time kismi eklenecek.
+// TODO: CONTAINER'in 2 sn sonra veri kesilmesi ve GLIDER dan veri alinmasi yapilacak.
 
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
@@ -12,6 +11,7 @@
 #include <QtSerialPort/QSerialPort>
 #include <QDebug>
 #include <QObject>
+#include <qapplication.h>
 
 QSerialPort *serial;
 QString raw;
@@ -35,8 +35,6 @@ MainWindow::MainWindow(QWidget *parent) :
         ui->pic_compass->setPixmap(compass);
         QPixmap logo("/home/sems/Documents/grizu-263/CanSat-2017-Ground-Control-Station/grizu-263_GCS/resources/grizulogo.png");
         ui->pic_logo->setPixmap(logo);
-        QPixmap state("/home/sems/Documents/grizu-263/CanSat-2017-Ground-Control-Station/grizu-263_GCS/resources/true.png");
-        ui->pic_state->setPixmap(state);
         QPixmap beun("/home/sems/Documents/grizu-263/CanSat-2017-Ground-Control-Station/grizu-263_GCS/resources/beun.png");
         ui->pic_beun->setPixmap(beun);
         QPixmap aas("/home/sems/Documents/grizu-263/CanSat-2017-Ground-Control-Station/grizu-263_GCS/resources/aas.png");
@@ -101,6 +99,7 @@ MainWindow::MainWindow(QWidget *parent) :
         ui->glidPresPlot->axisRect()->setupFullAxesBox();
         ui->glidPresPlot->yAxis->setRange(0, 5000);
 
+
         //Serial communication
         serial = new QSerialPort(this);
         serial->setPortName("/dev/ttyUSB0");
@@ -118,6 +117,7 @@ MainWindow::~MainWindow()
 {
         delete ui;
 }
+
 
 void MainWindow::serialReceived(){
         if(serial->canReadLine()) {
@@ -142,10 +142,10 @@ void MainWindow::serialReceived(){
                                 con_volt = raw_list.at(5).toDouble(&ok);
                                 softState = raw_list.at(6);
 
-                                ui->conAltLbl->clear();
-                                ui->conAltLbl->setText(QString::number(13));
+                                ui->conAltLbl->setText(QString::number(con_alt));
                                 ui->conTempLbl->setText(QString::number(con_temp));
                                 ui->conVoltLbl->setText(QString::number(con_volt));
+                                ui->stateLbl->setText(softState);
 
                                 connect(dataTimer, SIGNAL(timeout()), this, SLOT(realtimeDataSlot()));
                                 dataTimer->start(0); // Interval 0 means to refresh as fast as possible
@@ -176,6 +176,7 @@ void MainWindow::serialReceived(){
                                 ui->glidSpdLbl->setText(QString::number(gld_speed));
                                 ui->glidTempLbl->setText(QString::number(gld_temp));
                                 ui->glidVoltLbl->setText(QString::number(gld_volt));
+                                ui->stateLbl->setText(softState);
 
                                 connect(dataTimer, SIGNAL(timeout()), this, SLOT(realtimeDataSlot()));
                                 dataTimer->start(0); // Interval 0 means to refresh as fast as possible
@@ -219,7 +220,8 @@ void MainWindow::realtimeDataSlot(){
                 ui->glidPresPlot->graph(0)->rescaleValueAxis(true);
                 lastPointKey = key;
         }
-// make key axis range scroll with the data (at a constant range size of 8):
+
+        // make key axis range scroll with the data (at a constant range size of 8):
         ui->conAltPlot->xAxis->setRange(key, 8, Qt::AlignRight);
         ui->conAltPlot->replot();
         ui->conTempPlot->xAxis->setRange(key, 8, Qt::AlignRight);
@@ -236,4 +238,5 @@ void MainWindow::realtimeDataSlot(){
         ui->glidTempPlot->replot();
         ui->glidPresPlot->xAxis->setRange(key, 8, Qt::AlignRight);
         ui->glidPresPlot->replot();
+
 }
