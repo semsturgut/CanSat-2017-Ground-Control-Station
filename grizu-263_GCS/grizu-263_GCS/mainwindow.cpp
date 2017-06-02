@@ -1,6 +1,6 @@
 // @@@ Grafik x ekseni default degerleri yarismadan once kontrol edilecek.
 // TODO: Veri alisverisinden belirli bir sure sonra olusan arayuz takilmasi problemi giderilecek..
-// TODO: Glider 2d harita yazilmasi gerekiyor..
+// TODO: Glider 2d harita hatalari duzeltilecek.
 // TODO: Log kaydi tutulacak.
 
 #include "mainwindow.h"
@@ -11,6 +11,10 @@
 #include <QDebug>
 #include <QObject>
 #include <qapplication.h>
+#include <QFile>
+#include <QString>
+#include <QDebug>
+#include <QTextStream>
 
 QSerialPort *serial;
 QString raw;
@@ -116,6 +120,7 @@ MainWindow::MainWindow(QWidget *parent) :
         connect(serial,SIGNAL(readyRead()),this,SLOT(serialReceived()));
         scene->addItem(triangle);   /// Adding to the scene triangle
         triangle->setPos(0,0);      /// Set the triangle in the center of the stage
+
 }
 
 MainWindow::~MainWindow() {
@@ -133,24 +138,51 @@ void MainWindow::serialReceived() {
                 raw_list = QString(raw_list.at(0)).split("\r",QString::SkipEmptyParts);
                 raw_list = QString(raw_list.at(0)).split(",",QString::SkipEmptyParts);
                 qDebug() << raw_list;
+
+                QString csvName = "/home/sems/Documents/grizu-263/CanSat-2017-Ground-Control-Station/grizu-263_GCS/resources/CANSAT2017_TLM_4773_GRIZU263.csv";
+                QFile csvFile(csvName);
+                if(!csvFile.open(QFile::WriteOnly | QFile::Text)) {
+//                    qDebug << "Error openning file.";
+                }
+
                 if (raw_list.at(0) == "CONTAINER") {
                         if(raw_list.size() >= 7) {
                                 ui->lcdNumber->display(raw_list.at(2));
                                 // setup a timer that repeatedly calls MainWindow::realtimeDataSlot:
                                 QTimer *dataTimer = new QTimer(this);
                                 bool ok;
+
+                                QTextStream stream(&csvFile);
+                                stream <<"4773";
+                                stream <<",";
+                                stream << raw_list.at(0);
+                                stream << ",";
                                 con_missionTime = raw_list.at(1);
+                                stream << raw_list.at(1);
+                                stream << ",";
                                 con_count = raw_list.at(2).toInt();
+                                stream << raw_list.at(2);
+                                stream << ",";
                                 con_alt = raw_list.at(3).toDouble(&ok);
+                                stream << raw_list.at(3);
+                                stream << ",";
                                 con_temp = raw_list.at(4).toDouble(&ok);
+                                stream << raw_list.at(4);
+                                stream << ",";
                                 con_volt = raw_list.at(5).toDouble(&ok);
+                                stream << raw_list.at(5);
+                                stream << ",";
                                 softState = raw_list.at(6);
+                                stream << raw_list.at(6) << endl;
+                                csvFile.flush();
+                                csvFile.close();
 
                                 ui->mssnTimeLbl->setText(con_missionTime);
                                 ui->conAltLbl->setText(QString::number(con_alt));
                                 ui->conTempLbl->setText(QString::number(con_temp));
                                 ui->conVoltLbl->setText(QString::number(con_volt));
                                 ui->stateLbl->setText(softState);
+
 
                                 connect(dataTimer, SIGNAL(timeout()), this, SLOT(realtimeDataSlot()));
                                 dataTimer->start(0); // Interval 0 means to refresh as fast as possible
