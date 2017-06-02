@@ -1,13 +1,12 @@
 // @@@ Grafik x ekseni default degerleri yarismadan once kontrol edilecek.
-// Veri alisverisinden belirli bir sure sonra olusan arayuz takilmasi problemi giderilecek..
-// Glider 2d harita yazilmasi gerekiyor..
-// Log kaydi tutulacak.
-// Mission time kismi eklenecek.
-// TODO: CONTAINER'in 2 sn sonra veri kesilmesi ve GLIDER dan veri alinmasi yapilacak.
+// TODO: Veri alisverisinden belirli bir sure sonra olusan arayuz takilmasi problemi giderilecek..
+// TODO: Glider 2d harita yazilmasi gerekiyor..
+// TODO: Log kaydi tutulacak.
 
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
 #include "qcustomplot.h"
+#include "triangle.h"
 #include <QtSerialPort/QSerialPort>
 #include <QDebug>
 #include <QObject>
@@ -30,9 +29,14 @@ MainWindow::MainWindow(QWidget *parent) :
         ui(new Ui::MainWindow)
 {
         ui->setupUi(this);
+
+        scene = new QGraphicsScene();   /// Initialize the graphics scene
+        triangle = new Triangle();      /// Initialize triangle
+
+        ui->graphicsView->setScene(scene);  /// Set the graphic scene in qgraphicsView
+        ui->graphicsView->setRenderHint(QPainter::Antialiasing);    /// Install anti-aliasing
+
         //On Windows you should change directory. D:/Documents/grizu-263/GRIZU-263 (CANSAT)/Electronic Team/grizu-263_GCS/resources/
-        QPixmap compass("/home/sems/Documents/grizu-263/CanSat-2017-Ground-Control-Station/grizu-263_GCS/resources/compass.png");
-        ui->pic_compass->setPixmap(compass);
         QPixmap logo("/home/sems/Documents/grizu-263/CanSat-2017-Ground-Control-Station/grizu-263_GCS/resources/grizulogo.png");
         ui->pic_logo->setPixmap(logo);
         QPixmap beun("/home/sems/Documents/grizu-263/CanSat-2017-Ground-Control-Station/grizu-263_GCS/resources/beun.png");
@@ -102,7 +106,7 @@ MainWindow::MainWindow(QWidget *parent) :
 
         //Serial communication
         serial = new QSerialPort(this);
-        serial->setPortName("/dev/ttyUSB0");
+        serial->setPortName("/dev/ttyUSB0"); // Windows'ta "COM0" olarak degistirilmesi gerekiyor. Linux da ise "/dev/ttyUSB0"
         serial->setBaudRate(QSerialPort::Baud9600);
         serial->setDataBits(QSerialPort::Data8);
         serial->setParity(QSerialPort::NoParity);
@@ -110,16 +114,16 @@ MainWindow::MainWindow(QWidget *parent) :
         serial->setFlowControl(QSerialPort::NoFlowControl);
         serial->open(QIODevice::ReadWrite);
         connect(serial,SIGNAL(readyRead()),this,SLOT(serialReceived()));
-
+        scene->addItem(triangle);   /// Adding to the scene triangle
+        triangle->setPos(0,0);      /// Set the triangle in the center of the stage
 }
 
-MainWindow::~MainWindow()
-{
+MainWindow::~MainWindow() {
         delete ui;
 }
 
 
-void MainWindow::serialReceived(){
+void MainWindow::serialReceived() {
         if(serial->canReadLine()) {
                 QByteArray tel_data = serial->readLine();
                 std::string message(tel_data.constData(), tel_data.length());
@@ -142,6 +146,7 @@ void MainWindow::serialReceived(){
                                 con_volt = raw_list.at(5).toDouble(&ok);
                                 softState = raw_list.at(6);
 
+                                ui->mssnTimeLbl->setText(con_missionTime);
                                 ui->conAltLbl->setText(QString::number(con_alt));
                                 ui->conTempLbl->setText(QString::number(con_temp));
                                 ui->conVoltLbl->setText(QString::number(con_volt));
@@ -171,6 +176,7 @@ void MainWindow::serialReceived(){
                                 softState = raw_list.at(9);
                                 gld_img_count = raw_list.at(10).toInt();
 
+                                ui->mssnTimeLbl->setText(gld_missionTime);
                                 ui->glidAltLbl->setText(QString::number(gld_alt));
                                 ui->glidPresLbl->setText(QString::number(gld_press));
                                 ui->glidSpdLbl->setText(QString::number(gld_speed));
@@ -180,6 +186,13 @@ void MainWindow::serialReceived(){
 
                                 connect(dataTimer, SIGNAL(timeout()), this, SLOT(realtimeDataSlot()));
                                 dataTimer->start(0); // Interval 0 means to refresh as fast as possible
+
+                                glider_angle = gld_heading;
+                                glider_speed = gld_speed;
+                                timer = new QTimer();
+                                connect(timer, &QTimer::timeout, triangle, &Triangle::slotGameTimer);
+                                timer->start(1000 / 50);
+
                         } else if (raw_list.size() > 0) {
                                 con_loss++;
                                 qDebug() << "Data loss problem appeared..";
@@ -192,7 +205,7 @@ void MainWindow::serialReceived(){
         }
 }
 
-void MainWindow::realtimeDataSlot(){
+void MainWindow::realtimeDataSlot() {
 
         static QTime time(QTime::currentTime());
         // calculate two new data points:
