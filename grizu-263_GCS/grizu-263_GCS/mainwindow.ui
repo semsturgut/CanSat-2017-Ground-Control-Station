@@ -423,7 +423,7 @@ Space Team</string>
      <string>State:</string>
     </property>
    </widget>
-   <widget class="QLabel" name="label_26">
+   <widget class="QLabel" name="gldPosLbl">
     <property name="geometry">
      <rect>
       <x>420</x>

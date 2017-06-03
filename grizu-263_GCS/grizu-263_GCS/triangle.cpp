@@ -32,7 +32,7 @@ void Triangle::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, 
 
 void Triangle::slotGameTimer() {
     setRotation(glider_angle);
-    setPos(mapToParent(0, glider_speed));
+    setPos(mapToParent(0, -glider_speed/10));
 
     /* Check output of bounds. If the subject is beyond the set boundaries, then return it back
      * */

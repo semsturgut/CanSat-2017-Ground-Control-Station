@@ -1,7 +1,6 @@
 // @@@ Grafik x ekseni default degerleri yarismadan once kontrol edilecek.
 // TODO: Veri alisverisinden belirli bir sure sonra olusan arayuz takilmasi problemi giderilecek..
 // TODO: Glider 2d harita hatalari duzeltilecek.
-// TODO: Log kaydi tutulacak.
 
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
@@ -142,7 +141,7 @@ void MainWindow::serialReceived() {
                 QString csvName = "/home/sems/Documents/grizu-263/CanSat-2017-Ground-Control-Station/grizu-263_GCS/resources/CANSAT2017_TLM_4773_GRIZU263.csv";
                 QFile csvFile(csvName);
                 if(!csvFile.open(QFile::WriteOnly | QFile::Text)) {
-//                    qDebug << "Error openning file.";
+                    qDebug() << "Error openning file.";
                 }
 
                 if (raw_list.at(0) == "CONTAINER") {
@@ -209,6 +208,7 @@ void MainWindow::serialReceived() {
                                 gld_img_count = raw_list.at(10).toInt();
 
                                 ui->mssnTimeLbl->setText(gld_missionTime);
+                                ui->gldPosLbl->setText(QString::number(gld_heading));
                                 ui->glidAltLbl->setText(QString::number(gld_alt));
                                 ui->glidPresLbl->setText(QString::number(gld_press));
                                 ui->glidSpdLbl->setText(QString::number(gld_speed));
