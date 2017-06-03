@@ -152,8 +152,8 @@ void MainWindow::serialReceived() {
                                 bool ok;
 
                                 QTextStream stream(&csvFile);
-                                stream <<"4773";
-                                stream <<",";
+                                stream << "4773";
+                                stream << ",";
                                 stream << raw_list.at(0);
                                 stream << ",";
                                 con_missionTime = raw_list.at(1);
@@ -196,7 +196,7 @@ void MainWindow::serialReceived() {
                                 // setup a timer that repeatedly calls MainWindow::realtimeDataSlot:
                                 QTimer *dataTimer = new QTimer(this);
                                 bool ok;
-                                gld_missionTime = raw_list.at(1).toInt();
+                                gld_missionTime = raw_list.at(1);
                                 gld_count = raw_list.at(2).toInt();
                                 gld_alt = raw_list.at(3).toDouble(&ok);
                                 gld_press = raw_list.at(4).toDouble(&ok);
