@@ -137,10 +137,9 @@ void MainWindow::serialReceived() {
                 raw_list = QString(raw_list.at(0)).split("\r",QString::SkipEmptyParts);
                 raw_list = QString(raw_list.at(0)).split(",",QString::SkipEmptyParts);
                 qDebug() << raw_list;
-
                 QString csvName = "/home/sems/Documents/grizu-263/CanSat-2017-Ground-Control-Station/grizu-263_GCS/resources/CANSAT2017_TLM_4773_GRIZU263.csv";
                 QFile csvFile(csvName);
-                if(!csvFile.open(QFile::WriteOnly | QFile::Text)) {
+                if(!csvFile.open(QFile::WriteOnly | QFile::Append)) {
                     qDebug() << "Error openning file.";
                 }
 
