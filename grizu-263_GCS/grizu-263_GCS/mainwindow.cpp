@@ -55,21 +55,21 @@ MainWindow::MainWindow(QWidget *parent) :
         ui->lcdNumber->setDigitCount(4);
 
         ui->conAltPlot->addGraph(); // Container Altitude
-        ui->conAltPlot->graph(0)->setPen(QPen(QColor(244, 66, 66)));
+        ui->conAltPlot->graph(0)->setPen(QPen(QColor(157, 65, 244)));
         ui->conTempPlot->addGraph(); // Container Temperature
-        ui->conTempPlot->graph(0)->setPen(QPen(QColor(73, 65, 244)));
+        ui->conTempPlot->graph(0)->setPen(QPen(QColor(157, 65, 244)));
         ui->glidAltPlot->addGraph(); // Glider Altitude
-        ui->glidAltPlot->graph(0)->setPen(QPen(QColor(244, 241, 65)));
+        ui->glidAltPlot->graph(0)->setPen(QPen(QColor(157, 65, 244)));
         ui->conVoltPlot->addGraph(); // Container Voltage
         ui->conVoltPlot->graph(0)->setPen(QPen(QColor(157, 65, 244)));
         ui->glidSpdPlot->addGraph(); // Glider Speed
-        ui->glidSpdPlot->graph(0)->setPen(QPen(QColor(244, 241, 65)));
+        ui->glidSpdPlot->graph(0)->setPen(QPen(QColor(157, 65, 244)));
         ui->glidVoltPlot->addGraph(); // Glider Voltage
-        ui->glidVoltPlot->graph(0)->setPen(QPen(QColor(244, 241, 65)));
+        ui->glidVoltPlot->graph(0)->setPen(QPen(QColor(157, 65, 244)));
         ui->glidTempPlot->addGraph(); // Glider Temperature
-        ui->glidTempPlot->graph(0)->setPen(QPen(QColor(244, 241, 65)));
+        ui->glidTempPlot->graph(0)->setPen(QPen(QColor(157, 65, 244)));
         ui->glidPresPlot->addGraph(); // Glider Pressure
-        ui->glidPresPlot->graph(0)->setPen(QPen(QColor(244, 241, 65)));
+        ui->glidPresPlot->graph(0)->setPen(QPen(QColor(157, 65, 244)));
 
         QSharedPointer<QCPAxisTickerTime> timeTicker(new QCPAxisTickerTime);
         timeTicker->setTimeFormat("%m:%s");
@@ -181,7 +181,6 @@ void MainWindow::serialReceived() {
                                 ui->conVoltLbl->setText(QString::number(con_volt));
                                 ui->stateLbl->setText(softState);
 
-
                                 connect(dataTimer, SIGNAL(timeout()), this, SLOT(realtimeDataSlot()));
                                 dataTimer->start(0); // Interval 0 means to refresh as fast as possible
                         } else if (raw_list.size() > 0) {
@@ -200,7 +199,7 @@ void MainWindow::serialReceived() {
                                 gld_alt = raw_list.at(3).toDouble(&ok);
                                 gld_press = raw_list.at(4).toDouble(&ok);
                                 gld_speed = raw_list.at(5).toInt();
-                                gld_temp = raw_list.at(6).toInt();
+                                gld_temp = raw_list.at(6).toDouble(&ok);
                                 gld_volt = raw_list.at(7).toDouble(&ok);
                                 gld_heading = raw_list.at(8).toInt();
                                 softState = raw_list.at(9);
@@ -243,7 +242,6 @@ void MainWindow::realtimeDataSlot() {
         double key = time.elapsed()/1000.0; // time elapsed since start of demo, in seconds
         static double lastPointKey = 0;
         if (key-lastPointKey > 1) { // at most add point every 1 second
-
                 // add data to lines:
                 ui->conAltPlot->graph(0)->addData(key, con_alt);
                 ui->conTempPlot->graph(0)->addData(key, con_temp);
@@ -253,6 +251,7 @@ void MainWindow::realtimeDataSlot() {
                 ui->glidVoltPlot->graph(0)->addData(key, gld_volt);
                 ui->glidTempPlot->graph(0)->addData(key, gld_temp);
                 ui->glidPresPlot->graph(0)->addData(key, gld_press);
+
                 // rescale value (vertical) axis to fit the current data:
                 ui->conAltPlot->graph(0)->rescaleValueAxis(true);
                 ui->conTempPlot->graph(0)->rescaleValueAxis(true);
@@ -263,24 +262,24 @@ void MainWindow::realtimeDataSlot() {
                 ui->glidTempPlot->graph(0)->rescaleValueAxis(true);
                 ui->glidPresPlot->graph(0)->rescaleValueAxis(true);
                 lastPointKey = key;
-        }
 
-        // make key axis range scroll with the data (at a constant range size of 8):
-        ui->conAltPlot->xAxis->setRange(key, 8, Qt::AlignRight);
-        ui->conAltPlot->replot();
-        ui->conTempPlot->xAxis->setRange(key, 8, Qt::AlignRight);
-        ui->conTempPlot->replot();
-        ui->glidAltPlot->xAxis->setRange(key, 8, Qt::AlignRight);
-        ui->glidAltPlot->replot();
-        ui->conVoltPlot->xAxis->setRange(key, 8, Qt::AlignRight);
-        ui->conVoltPlot->replot();
-        ui->glidSpdPlot->xAxis->setRange(key, 8, Qt::AlignRight);
-        ui->glidSpdPlot->replot();
-        ui->glidVoltPlot->xAxis->setRange(key, 8, Qt::AlignRight);
-        ui->glidVoltPlot->replot();
-        ui->glidTempPlot->xAxis->setRange(key, 8, Qt::AlignRight);
-        ui->glidTempPlot->replot();
-        ui->glidPresPlot->xAxis->setRange(key, 8, Qt::AlignRight);
-        ui->glidPresPlot->replot();
+                // make key axis range scroll with the data (at a constant range size of 8):
+                ui->conAltPlot->xAxis->setRange(key, 8, Qt::AlignRight);
+                ui->conAltPlot->replot();
+                ui->conTempPlot->xAxis->setRange(key, 8, Qt::AlignRight);
+                ui->conTempPlot->replot();
+                ui->glidAltPlot->xAxis->setRange(key, 8, Qt::AlignRight);
+                ui->glidAltPlot->replot();
+                ui->conVoltPlot->xAxis->setRange(key, 8, Qt::AlignRight);
+                ui->conVoltPlot->replot();
+                ui->glidSpdPlot->xAxis->setRange(key, 8, Qt::AlignRight);
+                ui->glidSpdPlot->replot();
+                ui->glidVoltPlot->xAxis->setRange(key, 8, Qt::AlignRight);
+                ui->glidVoltPlot->replot();
+                ui->glidTempPlot->xAxis->setRange(key, 8, Qt::AlignRight);
+                ui->glidTempPlot->replot();
+                ui->glidPresPlot->xAxis->setRange(key, 8, Qt::AlignRight);
+                ui->glidPresPlot->replot();
+        }
 
 }
