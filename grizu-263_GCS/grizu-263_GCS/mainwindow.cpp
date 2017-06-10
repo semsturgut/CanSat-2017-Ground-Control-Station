@@ -23,7 +23,8 @@ QString softState,con_missionTime,gld_missionTime;
 double con_alt,con_temp,con_volt;
 double gld_alt,gld_press,gld_temp,gld_volt;
 int con_count;
-int gld_count,gld_speed,gld_heading,gld_img_count;
+int gld_count,gld_speed,gld_img_count;
+float gld_heading;
 int con_loss = 0,gld_loss=0;
 
 
@@ -201,7 +202,7 @@ void MainWindow::serialReceived() {
                                 gld_speed = raw_list.at(5).toInt();
                                 gld_temp = raw_list.at(6).toDouble(&ok);
                                 gld_volt = raw_list.at(7).toDouble(&ok);
-                                gld_heading = raw_list.at(8).toInt();
+                                gld_heading = raw_list.at(8).toDouble(&ok);
                                 softState = raw_list.at(9);
                                 gld_img_count = raw_list.at(10).toInt();
 
@@ -224,6 +225,7 @@ void MainWindow::serialReceived() {
                                 timer->start(1000 / 50);
 
                         } else if (raw_list.size() > 0) {
+//                                qDebug << gld_heading;
                                 con_loss++;
                                 qDebug() << "Data loss problem appeared..";
                                 qDebug() << "Total data loss on GLIDER: " << con_loss;
